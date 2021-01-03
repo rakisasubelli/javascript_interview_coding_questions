@@ -1,0 +1,107 @@
+HackerRank ‘Array Manipulation’
+
+Starting with a 1-indexed array of zeros and a list of operations, for each operation add a value to each of the array element between two given indices, inclusive. Once all operations have been performed, return the maximum value in the array.
+
+Example
+n = 10,
+queries =     [[1, 5, 3],[4, 8, 7],[6, 9, 1]];
+
+Queries are interpreted as follows:
+
+    a b k
+    1 5 3
+    4 8 7
+    6 9 1
+Add the values of k between the indices a and b inclusive:
+
+index->	 1 2 3  4  5 6 7 8 9 10
+	[0,0,0, 0, 0,0,0,0,0, 0]
+	[3,3,3, 3, 3,0,0,0,0, 0]
+	[3,3,3,10,10,7,7,7,0, 0]
+	[3,3,3,10,10,8,8,8,1, 0]
+The largest value is  after all operations are performed.
+
+Function Description
+
+Complete the function arrayManipulation in the editor below.
+
+arrayManipulation has the following parameters:
+
+int n - the number of elements in the array
+int queries[q][3] - a two dimensional array of queries where each queries[i] contains three integers, a, b, and k.
+Returns
+
+int - the maximum value in the resultant array
+
+
+'use strict';
+
+const fs = require('fs');
+
+process.stdin.resume();
+process.stdin.setEncoding('utf-8');
+
+let inputString = '';
+let currentLine = 0;
+
+process.stdin.on('data', inputStdin => {
+    inputString += inputStdin;
+});
+
+process.stdin.on('end', _ => {
+    inputString = inputString.replace(/\s*$/, '')
+        .split('\n')
+        .map(str => str.replace(/\s*$/, ''));
+
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
+
+// Complete the arrayManipulation function below.
+function arrayManipulation(n, queries) {
+    let maxCount = Number.MIN_VALUE;
+    let array = new Array(n); 
+    for (let x=0;x<n; x++) {
+        array[x] = 0;
+    }
+    for(let i=0; i<queries.length; i++) {
+        let [a, b, k] = queries[i];
+        a = a-1;
+        array[a] += k
+        array[b] -= k
+    }
+     let running_count = 0
+    for (const element of array) {
+        running_count +=element;
+        
+        if(running_count >maxCount) {
+            maxCount = running_count
+        }
+    }
+    return maxCount;
+}
+
+function main() {
+    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+
+    const nm = readLine().split(' ');
+
+    const n = parseInt(nm[0], 10);
+
+    const m = parseInt(nm[1], 10);
+
+    let queries = Array(m);
+
+    for (let i = 0; i < m; i++) {
+        queries[i] = readLine().split(' ').map(queriesTemp => parseInt(queriesTemp, 10));
+    }
+
+    let result = arrayManipulation(n, queries);
+
+    ws.write(result + "\n");
+
+    ws.end();
+}
